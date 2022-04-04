@@ -224,3 +224,41 @@ def addAttendance(request):
                 cal.save()
     return redirect('/ams/agent-dashboard')
 
+@login_required
+def SLProofSubmit(request): # Test1
+    if request.method == 'POST':
+        id = request.POST['id']
+        proof = request.FILES['proof']
+        leave = LeaveTable.objects.get(id=id)
+        last_date = leave.end_date
+        timee = (date.today() - last_date).days
+        if timee <= 2:
+            leave.proof = proof
+            leave.save()
+            return redirect('/ams/ams-apply_leave')
+        else:
+            messages.info(request, "The time has exceeded cannot upload now :)")
+            return redirect('/ams/ams-apply_leave')
+
+@login_required
+def applyEscalation(request): # Test1
+    if request.method == "POST":
+        id = request.POST["id"]
+        reason = request.POST['reason']
+        e = LeaveTable.objects.get(id=id)
+        e.escalation = True
+        e.escalation_reason = reason
+        e.save()
+        emp_id = e.emp_id
+        no_days = e.no_days
+        type = e.leave_type
+        a = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
+        if type == "PL":
+            a.pl_balance = a.pl_balance-no_days
+        else:
+            a.sl_balance = a.sl_balance - no_days
+        a.save()
+        messages.info(request,"Leave Escalated Successfully!")
+        return redirect('/ams/ams-apply_leave')
+    else:
+        pass

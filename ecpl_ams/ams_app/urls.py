@@ -13,4 +13,6 @@ urlpatterns = [
     path('ams-agent-settings',agentSettings),
     path('ams-apply_leave',applyLeave),
     path('add-attendance', addAttendance),
+    path('sl-proof', SLProofSubmit),
+    path('apply-escalation', applyEscalation),
 ]
