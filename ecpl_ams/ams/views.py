@@ -101,7 +101,7 @@ def agentDashBoard(request): # Test1
         data = {'emp':emp,'leave_hist':leave_hist,'month_cal':month_cal}
         return render(request,'agent-dashboard-new.html',data)
     else:
-        return HttpResponse('<H1>You are not Authorised to view this page ! </H1>')
+        return redirect('http://hrms.ecpl.com/ams/login')
 
 @login_required
 def uploadImageToDB(request): # Test1
