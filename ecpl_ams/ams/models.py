@@ -61,7 +61,7 @@ class LeaveTable(models.Model):
     emp_rm3_id = models.CharField(max_length=50)
     escalation = models.BooleanField(default=False)
     escalation_reason = models.TextField(null=True, blank=True)
-    proof = models.FileField(null=True, blank=True, upload_to='SL_Proof')
+    proof = models.FileField(null=True, blank=True,upload_to='Uploads/SL_Proof')
 
 
 class leaveHistory(models.Model):

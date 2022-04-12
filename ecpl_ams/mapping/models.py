@@ -18,7 +18,7 @@ class Profile(models.Model):
     emp_process = models.CharField(max_length=200)
     emp_process_id = models.CharField(max_length=10)
     pc = models.BooleanField(default=False)
-    img = models.ImageField(upload_to='user_images', default="user_images/user.png")
+    img = models.ImageField(upload_to='users/',default="users/default.png")
     doj = models.DateField(null=True, blank=True)
     active = models.BooleanField(default=True)
     on_id = models.IntegerField(null=True, blank=True)
