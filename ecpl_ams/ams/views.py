@@ -8,9 +8,9 @@ from .models import *
 import calendar
 from django.http import HttpResponse
 from django.db.models import Q, Sum
-
+from django.apps import apps
 # Create your views here.
-
+Profile = apps.get_model('mapping', 'Profile')
 agent_list = [ 'Client Relationship Officer','MIS Executive','Patrolling officer',
                'Data Analyst','Business Development Executive','Content Developer',
                'Junior Developer','Web Developer','Trainee Developer','Jr Dev','CRO',
