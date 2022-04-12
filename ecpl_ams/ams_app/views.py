@@ -9,6 +9,7 @@ import calendar
 from django.http import HttpResponse
 from django.db.models import Q, Sum
 
+
 # Create your views here.
 
 agent_list = [ 'Client Relationship Officer','MIS Executive','Patrolling officer',

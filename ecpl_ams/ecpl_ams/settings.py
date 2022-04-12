@@ -77,9 +77,14 @@ WSGI_APPLICATION = 'ecpl_ams.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'HRMS',
+        'HOST': '172.16.13.28',
+        'USER': 'ecpllocal',
+        'PASSWORD': 'Ecpl@2022',
+        'PORT': '3306'
     }
+
 }
 
 
