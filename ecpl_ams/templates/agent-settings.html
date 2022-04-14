@@ -41,7 +41,7 @@
                       <div class="col-md-8">
                         <div class="form-group">
                           <label for="pimg">Select the Profile Picture:</label>
-                          <input type="file" name="user-img" class="form-control" required>
+                          <input type="file" id="pimg" name="user-img" class="form-control uploadFile" required>
                           <input type="hidden" name="id" value="{{user.profile.id}}">
                         </div>
                       </div>
@@ -66,4 +66,30 @@
         <!-- /footer content -->
       </div>
     </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+  var MAX_FILE_SIZE = 2048 * 1024; // 2 MB
+  $(document).ready(function() {
+      $('.uploadFile').change(function() {
+          var fileInput = this;
+          var filePath = fileInput.value;
+          var allowedExtensions =  /(\.jpg|\.jpeg|\.png)$/i;
+          if (!allowedExtensions.exec(filePath)) {
+              fileInput.setCustomValidity("Only Images (.png, .jpg, .jpeg) are accepted");
+              fileInput.reportValidity();
+              return false;
+          } else {
+              fileInput.setCustomValidity("");
+          }
+          fileSize = this.files[0].size;
+          if (fileSize > MAX_FILE_SIZE) {
+              this.setCustomValidity("File must not exceed 2 MB!");
+              this.reportValidity();
+          } else {
+              this.setCustomValidity("");
+          }
+      });
+  });
+</script>
 {% endblock %}
