@@ -75,7 +75,8 @@ def agentDashBoard(request): # Test1
         emp_id = request.user.profile.emp_id
         emp = Profile.objects.get(emp_id = emp_id)
         # Leave status
-        leave_hist = LeaveTable.objects.filter(Q(emp_id=emp_id),Q(leave_type__in=['SL','PL','ML'])).order_by('-applied_date')[:5]
+        leave_hist = LeaveTable.objects.filter(Q(emp_id=emp_id), Q(leave_type__in=['SL', 'PL', 'ML'])).order_by(
+            '-id')[:5]
         # Month view
         month_days = []
         todays_date = date.today()
@@ -144,35 +145,52 @@ def applyLeave(request): # Test1
         no_days = request.POST["leave_days"]
         agent_reason = request.POST["reason"]
         unique_id = request.POST['csrfmiddlewaretoken']
-        e = LeaveTable()
-        e.unique_id = unique_id
-        e.applied_date = date.today()
-        e.leave_type = leave_type
-        e.start_date = start_date
-        e.end_date = end_date
-        e.no_days = no_days
-        e.agent_reason = agent_reason
-        e.emp_name = emp_name
-        e.emp_id = emp_id
-        e.emp_desi = emp_desi
-        e.emp_process = emp_process
-        e.emp_rm1 = emp_rm1
-        e.emp_rm2 = emp_rm2
-        e.emp_rm3 = emp_rm3
-        e.emp_rm1_id = emp_rm1_id
-        e.emp_rm2_id = emp_rm2_id
-        e.emp_rm3_id = emp_rm3_id
-        rm1_desi = Profile.objects.get(emp_id=emp_rm1_id).emp_desi
 
-        e.save()
-        leave_balance = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
-        if leave_type == 'PL':
-            leave_balance.pl_balance-=int(no_days)
-            leave_balance.save()
-        elif leave_type == 'SL':
-            leave_balance.sl_balance-=int(no_days)
-            leave_balance.save()
-        return redirect('/ams/ams-apply_leave')
+        leaves = LeaveTable.objects.filter(emp_id=emp_id)
+        leave_dates_list = []
+        for i in leaves:
+            while i.start_date <= i.end_date:
+                leave_dates_list.append(i.start_date)
+                i.start_date += timedelta(days=1)
+        new_leave_dates = []
+        while start_date <= end_date:
+            new_leave_dates.append(start_date)
+            start_date += timedelta(days=1)
+
+        common_dates = set(leave_dates_list) & set(new_leave_dates)
+        if common_dates:
+            messages.error(request, "Leaves have already been applied for selected date(s).")
+            return redirect('/ams/ams-apply_leave')
+        else:
+            e = LeaveTable()
+            e.unique_id = unique_id
+            e.applied_date = date.today()
+            e.leave_type = leave_type
+            e.start_date = start_date
+            e.end_date = end_date
+            e.no_days = no_days
+            e.agent_reason = agent_reason
+            e.emp_name = emp_name
+            e.emp_id = emp_id
+            e.emp_desi = emp_desi
+            e.emp_process = emp_process
+            e.emp_rm1 = emp_rm1
+            e.emp_rm2 = emp_rm2
+            e.emp_rm3 = emp_rm3
+            e.emp_rm1_id = emp_rm1_id
+            e.emp_rm2_id = emp_rm2_id
+            e.emp_rm3_id = emp_rm3_id
+            rm1_desi = Profile.objects.get(emp_id=emp_rm1_id).emp_desi
+
+            e.save()
+            leave_balance = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
+            if leave_type == 'PL':
+                leave_balance.pl_balance-=int(no_days)
+                leave_balance.save()
+            elif leave_type == 'SL':
+                leave_balance.sl_balance-=int(no_days)
+                leave_balance.save()
+            return redirect('/ams/ams-apply_leave')
     else:
         emp_id = request.user.profile.emp_id
         emp = Profile.objects.get(emp_id=emp_id)

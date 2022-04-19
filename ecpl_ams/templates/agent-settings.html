@@ -41,7 +41,7 @@
                       <div class="col-md-8">
                         <div class="form-group">
                           <label for="pimg">Select the Profile Picture:</label>
-                          <input type="file" id="pimg" name="user-img" class="form-control uploadFile" required>
+                          <input type="file" id="pimg" name="user-img" class="form-control uploadFile" accept=".png, .jpg, .jpeg" required>
                           <input type="hidden" name="id" value="{{user.profile.id}}">
                         </div>
                       </div>
@@ -56,16 +56,7 @@
           </div>
         </div>
         <!-- /page content -->
-        <!-- footer content -->
-        <footer>
-          <div class="text-center">
-            ECPL CC Team
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
-      </div>
-    </div>
+
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
