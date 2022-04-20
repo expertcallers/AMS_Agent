@@ -9,24 +9,28 @@ import calendar
 from django.http import HttpResponse
 from django.db.models import Q, Sum
 from django.apps import apps
+
 # Create your views here.
 Profile = apps.get_model('mapping', 'Profile')
-agent_list = [ 'Client Relationship Officer','MIS Executive','Patrolling officer',
-               'Data Analyst','Business Development Executive','Content Developer',
-               'Junior Developer','Web Developer','Trainee Developer','Jr Dev','CRO',
-                ]
+agent_list = ['Client Relationship Officer', 'MIS Executive', 'Patrolling officer',
+              'Data Analyst', 'Business Development Executive', 'Content Developer',
+              'Junior Developer', 'Web Developer', 'Trainee Developer', 'Jr Dev', 'CRO',
+              ]
 
-def loginPage(request): # Test1
+
+def loginPage(request):  # Test1
     logout(request)
     form = AuthenticationForm()
-    data = {'form':form}
-    return render(request,'login.html',data)
+    data = {'form': form}
+    return render(request, 'login.html', data)
 
-def logoutView(request): # Test1
+
+def logoutView(request):  # Test1
     logout(request)
     return redirect('/ams/')
 
-def loginAndRedirect(request): # Test1
+
+def loginAndRedirect(request):  # Test1
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
@@ -38,7 +42,7 @@ def loginAndRedirect(request): # Test1
                 return redirect('/ams/agent-dashboard')
         else:
             form = AuthenticationForm()
-            messages.info(request,'Invalid Credentials')
+            messages.info(request, 'Invalid Credentials')
             data = {'form': form}
             return render(request, 'login.html', data)
     else:
@@ -49,7 +53,7 @@ def loginAndRedirect(request): # Test1
 
 
 @login_required
-def change_password(request): # Test1
+def change_password(request):  # Test1
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -66,14 +70,14 @@ def change_password(request): # Test1
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
-    return render(request,'change-password.html', {'form': form})
+    return render(request, 'change-password.html', {'form': form})
 
 
 @login_required
-def agentDashBoard(request): # Test1
+def agentDashBoard(request):  # Test1
     if request.user.profile.emp_desi in agent_list:
         emp_id = request.user.profile.emp_id
-        emp = Profile.objects.get(emp_id = emp_id)
+        emp = Profile.objects.get(emp_id=emp_id)
         # Leave status
         leave_hist = LeaveTable.objects.filter(Q(emp_id=emp_id), Q(leave_type__in=['SL', 'PL', 'ML'])).order_by(
             '-id')[:5]
@@ -93,20 +97,21 @@ def agentDashBoard(request): # Test1
         for i in month_days:
             dict = {}
             try:
-                st = EcplCalander.objects.get(Q(date=i),Q(emp_id = emp_id)).att_actual
+                st = EcplCalander.objects.get(Q(date=i), Q(emp_id=emp_id)).att_actual
             except EcplCalander.DoesNotExist:
                 st = 'Unmarked'
             dict['dt'] = i
             dict['st'] = st
             month_cal.append(dict)
-        data = {'emp':emp,'leave_hist':leave_hist,'month_cal':month_cal}
-        return render(request,'agent-dashboard-new.html',data)
+        data = {'emp': emp, 'leave_hist': leave_hist, 'month_cal': month_cal}
+        return render(request, 'agent-dashboard-new.html', data)
     else:
         return redirect('http://hrms.ecpl.com/ams/login')
 
+
 @login_required
-def uploadImageToDB(request): # Test1
-    if request.method=='POST':
+def uploadImageToDB(request):  # Test1
+    if request.method == 'POST':
         user_image = request.FILES['user-img']
         id = request.POST['id']
         prof = Profile.objects.get(id=id)
@@ -116,17 +121,18 @@ def uploadImageToDB(request): # Test1
     else:
         pass
 
+
 @login_required
-def agentSettings(request): # Test1
+def agentSettings(request):  # Test1
     emp_id = request.user.profile.emp_id
     emp = Profile.objects.get(emp_id=emp_id)
     form = PasswordChangeForm(request.user)
-    data = {'emp':emp,'form':form}
-    return render(request,'agent-settings.html',data)
+    data = {'emp': emp, 'form': form}
+    return render(request, 'agent-settings.html', data)
 
 
 @login_required
-def applyLeave(request): # Test1
+def applyLeave(request):  # Test1
     if request.method == 'POST':
         emp_name = request.POST["emp_name"]
         emp_id = request.POST["emp_id"]
@@ -153,9 +159,11 @@ def applyLeave(request): # Test1
                 leave_dates_list.append(i.start_date)
                 i.start_date += timedelta(days=1)
         new_leave_dates = []
-        while start_date <= end_date:
-            new_leave_dates.append(start_date)
-            start_date += timedelta(days=1)
+        list_start_date = date.fromisoformat(start_date)  # To Convert type of start_date from string to date
+        list_end_date = date.fromisoformat(end_date)  # To Convert type of end_date from string to date
+        while list_start_date <= list_end_date:
+            new_leave_dates.append(list_start_date)
+            list_start_date += timedelta(days=1)
 
         common_dates = set(leave_dates_list) & set(new_leave_dates)
         if common_dates:
@@ -185,10 +193,10 @@ def applyLeave(request): # Test1
             e.save()
             leave_balance = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
             if leave_type == 'PL':
-                leave_balance.pl_balance-=int(no_days)
+                leave_balance.pl_balance -= int(no_days)
                 leave_balance.save()
             elif leave_type == 'SL':
-                leave_balance.sl_balance-=int(no_days)
+                leave_balance.sl_balance -= int(no_days)
                 leave_balance.save()
             return redirect('/ams/ams-apply_leave')
     else:
@@ -197,13 +205,13 @@ def applyLeave(request): # Test1
         leave = LeaveTable.objects.filter(emp_id=emp_id)
 
         try:
-            Profile.objects.get(emp_id=emp_id,doj=None)
-            doj = date(2020,1,1)
+            Profile.objects.get(emp_id=emp_id, doj=None)
+            doj = date(2020, 1, 1)
             today = date.today()
             probation = (today - doj).days
         except Profile.DoesNotExist:
             if emp.doj == None:
-                doj = date(2020,1,1)
+                doj = date(2020, 1, 1)
             else:
                 doj = emp.doj
             today = date.today()
@@ -211,21 +219,22 @@ def applyLeave(request): # Test1
         try:
             leave_balance = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
         except EmployeeLeaveBalance.DoesNotExist:
-            leave_balance = {'sl_balance':0,'pl_balance':0}
-        leave_his = leaveHistory.objects.filter(emp_id=emp_id).values('date','transaction',
-                                                                  'leave_type','total').annotate(no_days=Sum('no_days'))
-        data = {'emp': emp,'leave':leave,'leave_balance':leave_balance,'probation':probation,'leave_his':leave_his}
-        return render(request,'apply-leave.html',data)
-
+            leave_balance = {'sl_balance': 0, 'pl_balance': 0}
+        leave_his = leaveHistory.objects.filter(emp_id=emp_id).values('date', 'transaction',
+                                                                      'leave_type', 'total').annotate(
+            no_days=Sum('no_days'))
+        data = {'emp': emp, 'leave': leave, 'leave_balance': leave_balance, 'probation': probation,
+                'leave_his': leave_his}
+        return render(request, 'apply-leave.html', data)
 
 
 @login_required
 def addAttendance(request):
     month = 4
     year = 2022
-    start_date = date(year,month,1)
+    start_date = date(year, month, 1)
     last = calendar.monthrange(year, month)[1]
-    last_date = date(year,month,last)
+    last_date = date(year, month, last)
     delta = last_date - start_date
     date_list = []
     for i in range(delta.days + 1):
@@ -234,16 +243,19 @@ def addAttendance(request):
     profile = Profile.objects.filter(agent_status='Active')
     for i in date_list:
         for j in profile:
-            ec_cal= EcplCalander.objects.filter(emp_id=j.emp_id,date=i).count()
+            ec_cal = EcplCalander.objects.filter(emp_id=j.emp_id, date=i).count()
             if ec_cal < 1:
-                cal = EcplCalander.objects.create(date=i,emp_id=j.emp_id,att_actual='Unmarked',emp_name=j.emp_name,emp_desi=j.emp_desi,
-                    team=j.emp_process,team_id=j.emp_process_id,rm1=j.emp_rm1,rm2=j.emp_rm2,rm3=j.emp_rm3,rm1_id=j.emp_rm1_id,
-                    rm2_id=j.emp_rm2_id,rm3_id=j.emp_rm3_id)
+                cal = EcplCalander.objects.create(date=i, emp_id=j.emp_id, att_actual='Unmarked', emp_name=j.emp_name,
+                                                  emp_desi=j.emp_desi,
+                                                  team=j.emp_process, team_id=j.emp_process_id, rm1=j.emp_rm1,
+                                                  rm2=j.emp_rm2, rm3=j.emp_rm3, rm1_id=j.emp_rm1_id,
+                                                  rm2_id=j.emp_rm2_id, rm3_id=j.emp_rm3_id)
                 cal.save()
     return redirect('/ams/agent-dashboard')
 
+
 @login_required
-def SLProofSubmit(request): # Test1
+def SLProofSubmit(request):  # Test1
     if request.method == 'POST':
         id = request.POST['id']
         proof = request.FILES['proof']
@@ -258,8 +270,9 @@ def SLProofSubmit(request): # Test1
             messages.info(request, "The time has exceeded cannot upload now :)")
             return redirect('/ams/ams-apply_leave')
 
+
 @login_required
-def applyEscalation(request): # Test1
+def applyEscalation(request):  # Test1
     if request.method == "POST":
         id = request.POST["id"]
         reason = request.POST['reason']
@@ -272,11 +285,11 @@ def applyEscalation(request): # Test1
         type = e.leave_type
         a = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
         if type == "PL":
-            a.pl_balance = a.pl_balance-no_days
+            a.pl_balance = a.pl_balance - no_days
         else:
             a.sl_balance = a.sl_balance - no_days
         a.save()
-        messages.info(request,"Leave Escalated Successfully!")
+        messages.info(request, "Leave Escalated Successfully!")
         return redirect('/ams/ams-apply_leave')
     else:
         pass
