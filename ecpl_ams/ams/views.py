@@ -152,15 +152,15 @@ def applyLeave(request):  # Test1
         agent_reason = request.POST["reason"]
         unique_id = request.POST['csrfmiddlewaretoken']
 
-        leaves = LeaveTable.objects.filter(emp_id=emp_id)
+        leaves = LeaveTable.objects.filter(emp_id=emp_id).exclude(status="Rejected")
         leave_dates_list = []
         for i in leaves:
             while i.start_date <= i.end_date:
                 leave_dates_list.append(i.start_date)
                 i.start_date += timedelta(days=1)
         new_leave_dates = []
-        list_start_date = date.fromisoformat(start_date)  # To Convert type of start_date from string to date
-        list_end_date = date.fromisoformat(end_date)  # To Convert type of end_date from string to date
+        list_start_date = date.fromisoformat(start_date) # To Convert type of start_date from string to date
+        list_end_date = date.fromisoformat(end_date) # To Convert type of end_date from string to date
         while list_start_date <= list_end_date:
             new_leave_dates.append(list_start_date)
             list_start_date += timedelta(days=1)
@@ -188,8 +188,6 @@ def applyLeave(request):  # Test1
             e.emp_rm1_id = emp_rm1_id
             e.emp_rm2_id = emp_rm2_id
             e.emp_rm3_id = emp_rm3_id
-            rm1_desi = Profile.objects.get(emp_id=emp_rm1_id).emp_desi
-
             e.save()
             leave_balance = EmployeeLeaveBalance.objects.get(emp_id=emp_id)
             if leave_type == 'PL':
@@ -203,7 +201,6 @@ def applyLeave(request):  # Test1
         emp_id = request.user.profile.emp_id
         emp = Profile.objects.get(emp_id=emp_id)
         leave = LeaveTable.objects.filter(emp_id=emp_id)
-
         try:
             Profile.objects.get(emp_id=emp_id, doj=None)
             doj = date(2020, 1, 1)
@@ -226,7 +223,6 @@ def applyLeave(request):  # Test1
         data = {'emp': emp, 'leave': leave, 'leave_balance': leave_balance, 'probation': probation,
                 'leave_his': leave_his}
         return render(request, 'apply-leave.html', data)
-
 
 @login_required
 def addAttendance(request):
