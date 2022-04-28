@@ -159,8 +159,8 @@ def applyLeave(request):  # Test1
                 leave_dates_list.append(i.start_date)
                 i.start_date += timedelta(days=1)
         new_leave_dates = []
-        list_start_date = date.fromisoformat(start_date) # To Convert type of start_date from string to date
-        list_end_date = date.fromisoformat(end_date) # To Convert type of end_date from string to date
+        list_start_date = datetime.strptime(start_date,'%Y-%m-%d') # To Convert type of start_date from string to date
+        list_end_date = datetime.strptime(end_date,'%Y-%m-%d') # To Convert type of end_date from string to date
         while list_start_date <= list_end_date:
             new_leave_dates.append(list_start_date)
             list_start_date += timedelta(days=1)
