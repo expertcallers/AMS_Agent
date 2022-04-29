@@ -137,38 +137,41 @@
 <script type="text/javascript">
     var sampleEvents = {
     "monthly": [
-        {% for c in month_cal %}
-        {
-            "id": 1,
-            "name": "{{c.st}}",
-            "startdate": "{{c.dt}}",
-            "enddate": "",
-            "starttime": "",
-            "endtime": "",
-            {% if c.st == 'Unmarked' %}
-            "color": "grey",
-            {% elif c.st == 'Holiday' %}
-            "color": "black",
-            {% elif c.st == 'Week OFF' %}
-            "color": "blue",
-            {% elif c.st == 'Comp OFF' %}
-            "color": "brown",
-            {% elif c.st == 'Absent' %}
-            "color": "red",
-            {% elif c.st == 'present' %}
-            "color": "green",
-            {% elif c.st == 'SL' %}
-            "color": "#fb06d0",
-            {% elif c.st == 'PL' %}
-            "color": "#fda802",
+          {% for c in month_cal %}
+          {
+              "id": 1,
+              "name": "{{c.st}}",
+              "startdate": "{{c.dt}}",
+              "enddate": "",
+              "starttime": "",
+              "endtime": "",
+              {% if c.st == 'Unmarked' %}
+              "color": "grey",
+              {% elif c.st == 'Week OFF' %}
+              "color": "#000000",
+              {% elif c.st == 'Comp OFF' %}
+              "color": "#FF8FFF",
+              {% elif c.st == 'Absent' %}
+              "color": "#FF0000",
+              {% elif c.st == 'present' %}
+              "color": "#008C00",
+              {% elif c.st == 'SL' %}
+              "color": "#FF0000",
+              {% elif c.st == 'PL' %}
+              "color": "#FF0000",
+              {% elif c.st == 'Training' %}
+              "color": "#6990CE",
+              {% elif c.st == 'Half Day' %}
+              "color": "#0000FF",
+              {% elif c.st == 'Client OFF' %}
+              "color": "#FF8FFF",
+              {% else %}
+              "color": "#B52E2E",
+              {% endif %}
 
-            {% else %}
-            "color": "grey",
-            {% endif %}
-
-            "url": ""
-        },
-        {% endfor %}
+              "url": ""
+          },
+          {% endfor %}
     ]
     };
 
