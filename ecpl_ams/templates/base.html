@@ -56,7 +56,7 @@
     </style>
   </head>
 
-<body class="nav-md" oncontextmenu="alert('Right Click is Blocked'); return false">
+<body class="nav-md">
 
     <div class="container body">
       <div class="main_container">
@@ -220,57 +220,6 @@
 
 
     <script type="text/javascript" src="{% static 'assets/js/monthly.js' %}"></script>
-      <script type="text/javascript">
-          var sampleEvents = {
-          "monthly": [
-              {% for c in month_cal %}
-              {
-                  "id": 1,
-                  "name": "{{c.st}}",
-                  "startdate": "{{c.dt}}",
-                  "enddate": "",
-                  "starttime": "",
-                  "endtime": "",
-                  {% if c.st == 'Unmarked' %}
-                  "color": "grey",
-                  {% elif c.st == 'Week OFF' %}
-                  "color": "#000000",
-                  {% elif c.st == 'Comp OFF' %}
-                  "color": "#FF8FFF",
-                  {% elif c.st == 'Absent' %}
-                  "color": "#FF0000",
-                  {% elif c.st == 'present' %}
-                  "color": "#008C00",
-                  {% elif c.st == 'SL' %}
-                  "color": "#FFD3DF",
-                  {% elif c.st == 'PL' %}
-                  "color": "#FFFF00",
-                  {% elif c.st == 'Training' %}
-                  "color": "#6990CE",
-                  {% elif c.st == 'Half Day' %}
-                  "color": "#0000FF",
-                  {% elif c.st == 'Client OFF' %}
-                  "color": "#FF8FFF",
-                  {% else %}
-                  "color": "#B52E2E",
-                  {% endif %}
-
-                  "url": ""
-              },
-              {% endfor %}
-          ]
-          };
-          $(document).ready( function() {
-              $('#mycalendarid').monthly({
-                  mode: 'event',
-                  dataType: 'json',
-                  jsonURL: '',
-                  weekStart:'Mon',
-                  events: sampleEvents
-              });
-          });
-      </script>
-
 
     <!-- The follwing two tags to be added Can be added to base file-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
@@ -290,42 +239,6 @@
         $end = $('#end_date');
         $end.attr("min", $start);
       }
-    </script>
-    <script>
-        var dob = document.getElementById('emp_dob_1');
-        document.getElementById('emp_dob_v').value = moment(dob.value).format('YYYY-MM-DD');
-
-        var from1 = document.getElementById("emp_pre_empl_from");
-        var to1 = document.getElementById("emp_pre_empl_to");
-        var from2 = document.getElementById("emp_pre_empl_from_2");
-        var to2 = document.getElementById("emp_pre_empl_to_2");
-        var from3 = document.getElementById("emp_pre_empl_from_3");
-        var to3 = document.getElementById("emp_pre_empl_to_3");
-
-        {% if onboard.emp_pre_period_of_employment_frm %}
-        document.getElementById("va_emp_pre_empl_from").value = moment(from1).format("YYYY-MM-DD");
-        {% endif %}
-
-        {% if onboard.emp_pre_period_of_employment_to %}
-        document.getElementById("va_emp_pre_empl_to").value = moment(to1).format("YYYY-MM-DD");
-        {% endif %}
-
-        {% if onboard.emp_pre_period_of_employment_frm_two %}
-        document.getElementById("va_emp_pre_empl_from_2").value = moment(from2).format("YYYY-MM-DD");
-        {% endif %}
-
-        {% if onboard.emp_pre_period_of_employment_to_two %}
-        document.getElementById("va_emp_pre_empl_to_2").value = moment(to2).format("YYYY-MM-DD");
-        {% endif %}
-
-        {% if onboard.emp_pre_period_of_employment_frm_three %}
-        document.getElementById("va_emp_pre_empl_from_3").value = moment(from3).format("YYYY-MM-DD");
-        {% endif %}
-
-        {% if onboard.emp_pre_period_of_employment_to_three %}
-        document.getElementById("va_emp_pre_empl_to_3").value = moment(to3).format("YYYY-MM-DD");
-        {% endif %}
-
     </script>
 
 <script>
