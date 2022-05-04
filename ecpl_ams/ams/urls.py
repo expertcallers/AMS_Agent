@@ -15,4 +15,5 @@ urlpatterns = [
     path('add-attendance', addAttendance),
     path('sl-proof', SLProofSubmit),
     path('apply-escalation', applyEscalation),
+    path('view-emp-attendance', viewTeamAttendance),
 ]

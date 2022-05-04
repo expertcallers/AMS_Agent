@@ -63,6 +63,33 @@
                   </div>
                 </div>
               </div>
+
+              <div class="row mt-3">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h2>Attendance Report</h2>
+                    </div>
+                    <div class="card-body">
+                      <form action="/ams/view-emp-attendance" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input value="self" type="hidden" name="emp_id">
+                        <div class="col-md-6 form-group">
+                          <label for="start_date">Start Date</label>
+                          <input type="date" id="start_date" min="2022-04-01" onchange="mydate(this);" name="start_date" required class="form-control" value="" />
+                        </div>
+                        <div class="col-md-6 form-group">
+                          <label for="end_date">End Date</label>
+                          <input type="date" id="end_date" onchange="mydate(this);" name="end_date" required class="form-control" value="" />
+                        </div>
+                        <div class="col-md-12 form-group">
+                          <button class="form-control btn btn-primary">Submit</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="row mt-3">
                 <div class="col-md-12">
                   <div class="card">
@@ -174,5 +201,16 @@
             events: sampleEvents
         });
     });
+</script>
+<script type="text/javascript">
+  $today = new Date();
+  $today = moment($today).format('YYYY-MM-DD');
+  $('#end_date').attr("max", $today);
+  $('#start_date').attr("max", $today);
+  function mydate(e) {
+    $start = $('#start_date').val();
+    $end = $('#end_date');
+    $end.attr("min", $start);
+  }
 </script>
 {% endblock %}

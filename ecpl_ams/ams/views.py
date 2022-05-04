@@ -311,3 +311,17 @@ def applyEscalation(request):  # Test1
         return redirect('/ams/ams-apply_leave')
     else:
         pass
+
+
+@login_required
+def viewTeamAttendance(request):  # Test1
+    if request.method == 'POST':
+        emp_id = request.user.profile.emp_id
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        cal = EcplCalander.objects.filter(emp_id=emp_id, date__range=[start_date, end_date])
+        data = {'agt_cal_list': cal}
+        return render(request, 'agent-calander-status.html', data)
+    else:
+        messages.info(request, "Invalid Request!")
+        return redirect('/ams/agent-dashboard')
